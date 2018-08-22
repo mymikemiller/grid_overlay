@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:video_player/video_player.dart';
+import 'grid_painter.dart';
 
 class CameraExampleHome extends StatefulWidget {
   @override
@@ -101,11 +100,11 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
                 child: new CameraPreview(controller)),
           ),
           new Positioned.fill(
-            child: new Opacity(
-              opacity: 0.3,
-              child: new Image.network(
-                'https://static1.squarespace.com/static/5511fc7ce4b0a3782aa9418b/t/552ef12ee4b0e9ead81ceefd/1429139759978/learning-the-grid-method.jpg?format=1000w',
-                fit: BoxFit.fill,
+            child: new CustomPaint(
+              painter: new GridPainter(
+                squaresAcross: 3,
+                gridColor: Colors.white,
+                strokeWidth: 5.0,
               ),
             ),
           ),
