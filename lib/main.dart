@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
 import 'grid_painter.dart';
+import 'settings.dart';
 
 class GridOverlayHome extends StatefulWidget {
   @override
@@ -32,8 +32,6 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   CameraController controller;
   String imagePath;
   String videoPath;
-  VideoPlayerController videoController;
-  VoidCallback videoPlayerListener;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -47,9 +45,7 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   Widget build(BuildContext context) {
     return new Scaffold(
       key: _scaffoldKey,
-      appBar: new AppBar(
-        title: const Text('Grid Overlay'),
-      ),
+      appBar: null,
       body: new Column(
         children: <Widget>[
           new Expanded(
@@ -81,6 +77,13 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).pushNamed("settings");
+        },
+        tooltip: 'Settings',
+        child: new Icon(Icons.settings),
       ),
     );
   }
@@ -188,6 +191,10 @@ class CameraApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       home: new GridOverlayHome(),
+      routes: <String, WidgetBuilder>{
+        'main': (BuildContext context) => new GridOverlayHome(),
+        'settings': (BuildContext context) => new Settings(),
+      },
     );
   }
 }
