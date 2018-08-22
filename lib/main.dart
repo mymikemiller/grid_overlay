@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'grid_painter.dart';
 
-class CameraExampleHome extends StatefulWidget {
+class GridOverlayHome extends StatefulWidget {
   @override
-  _CameraExampleHomeState createState() {
-    return new _CameraExampleHomeState();
+  _GridOverlayHomeState createState() {
+    return new _GridOverlayHomeState();
   }
 }
 
@@ -28,7 +28,7 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
-class _CameraExampleHomeState extends State<CameraExampleHome> {
+class _GridOverlayHomeState extends State<GridOverlayHome> {
   CameraController controller;
   String imagePath;
   String videoPath;
@@ -37,7 +37,7 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  _CameraExampleHomeState() {
+  _GridOverlayHomeState() {
     if (cameras.isNotEmpty) {
       onNewCameraSelected(cameras[0]);
     }
@@ -187,7 +187,7 @@ class CameraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new CameraExampleHome(),
+      home: new GridOverlayHome(),
     );
   }
 }
