@@ -37,6 +37,12 @@ class _CameraExampleHomeState extends State<CameraExampleHome> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  _CameraExampleHomeState() {
+    if (cameras.isNotEmpty) {
+      onNewCameraSelected(cameras[0]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
