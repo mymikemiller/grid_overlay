@@ -3,8 +3,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   final int columns;
+  final int lineWidth;
 
-  SettingsScreen({this.columns});
+  SettingsScreen({this.columns, this.lineWidth});
 
   @override
   SettingsScreenState createState() {
@@ -14,6 +15,7 @@ class SettingsScreen extends StatefulWidget {
 
 class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController _columnsController;
+  TextEditingController _lineWidthController;
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -26,6 +28,9 @@ class SettingsScreenState extends State<SettingsScreen> {
     super.initState();
     _columnsController =
         new TextEditingController(text: widget.columns.toString());
+
+    _lineWidthController =
+        new TextEditingController(text: widget.lineWidth.toString());
   }
 
   _saveSettings() async {
@@ -33,8 +38,15 @@ class SettingsScreenState extends State<SettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     int columns = int.parse(_columnsController.text);
-
     await prefs.setInt("columns", columns);
+
+    int lineWidth = int.parse(_lineWidthController.text);
+    await prefs.setInt("lineWidth", lineWidth);
+  }
+
+  bool _validateNumber(String value) {
+    int parsed = int.tryParse(value);
+    return parsed != null && value.isNotEmpty;
   }
 
   @override
@@ -61,12 +73,28 @@ class SettingsScreenState extends State<SettingsScreen> {
             children: <Widget>[
               Row(
                 children: <Widget>[
-                  Text("Squares across:"),
+                  Text("Squares Across:"),
                   Expanded(
                     child: TextFormField(
                       controller: _columnsController,
                       validator: (value) {
-                        if (value.isEmpty) {
+                        if (!_validateNumber(value)) {
+                          return 'Please enter a number';
+                        }
+                      },
+                      keyboardType: TextInputType.number,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: <Widget>[
+                  Text("Line Width:"),
+                  Expanded(
+                    child: TextFormField(
+                      controller: _lineWidthController,
+                      validator: (value) {
+                        if (!_validateNumber(value)) {
                           return 'Please enter a number';
                         }
                       },

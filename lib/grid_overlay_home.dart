@@ -9,9 +9,10 @@ void logError(String code, String message) =>
 
 class GridOverlayHome extends StatefulWidget {
   final int columns;
+  final int lineWidth;
   final CameraDescription camera;
 
-  GridOverlayHome({this.camera, this.columns}) {
+  GridOverlayHome({this.camera, this.columns, this.lineWidth}) {
     print("Setting camera");
   }
 
@@ -37,6 +38,7 @@ IconData getCameraLensIcon(CameraLensDirection direction) {
 class _GridOverlayHomeState extends State<GridOverlayHome> {
   CameraController controller;
   int columns = 3;
+  int lineWidth = 2;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -53,16 +55,19 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
     await Navigator.of(context).push(MaterialPageRoute(
         builder: (BuildContext context) => new SettingsScreen(
               columns: this.columns,
+              lineWidth: this.lineWidth,
             )));
 
     final prefs = await SharedPreferences.getInstance();
 
-// Try reading data from the counter key. If it does not exist, return 0.
+    // Read the settings from shared preferences
     final newColumns = prefs.getInt('columns') ?? null;
-    print("columns: $newColumns");
-    if (newColumns != null) {
+    final newLineWidth = prefs.getInt('lineWidth') ?? null;
+
+    if (newColumns != null && newLineWidth != null) {
       setState(() {
         this.columns = newColumns;
+        this.lineWidth = newLineWidth;
       });
     }
   }
@@ -92,7 +97,7 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
               painter: new GridPainter(
                 columns: columns,
                 gridColor: Colors.white,
-                strokeWidth: 5.0,
+                strokeWidth: lineWidth.toDouble(),
               ),
             ),
           ),
