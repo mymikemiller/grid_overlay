@@ -3,9 +3,10 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 
 class GridPainter extends CustomPainter {
-  final int squaresAcross;
+  // The number of squares across the top of the image. The number of rows is implied by keeping the squares square.
+  final int columns;
   Paint gridPaint;
-  GridPainter({this.squaresAcross, Color gridColor, double strokeWidth = 1.0}) {
+  GridPainter({this.columns, Color gridColor, double strokeWidth = 1.0}) {
     gridPaint = Paint();
     gridPaint.color = gridColor;
     gridPaint.strokeWidth = strokeWidth;
@@ -14,13 +15,13 @@ class GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     // Figure out the square width
-    var squareWidth = size.width / squaresAcross;
+    var squareWidth = size.width / columns;
 
     // Figure out how many squares fit vertically at that size
     var squaresDown = size.height / squareWidth;
 
     // Horizontal lines
-    for (int i = 0; i < squaresAcross + 1; i++) {
+    for (int i = 0; i < columns + 1; i++) {
       canvas.drawLine(
         Offset(i * squareWidth, 0.0),
         Offset(i * squareWidth, size.height),
