@@ -1,7 +1,8 @@
 import 'grid_painter.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'settings.dart';
+import 'settings_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
@@ -40,7 +41,6 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   _GridOverlayHomeState(CameraDescription camera) {
-    //print("constructing. camera: ${widget.camera}");
     if (camera != null) {
       onNewCameraSelected(camera);
     }
@@ -49,12 +49,16 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   // Launch the Settings screen and awaits the result from Navigator.pop
   _showSettings(BuildContext context) async {
     // Navigator.push returns a Future that will complete after we call
-    // Navigator.pop on the Settings Screen!
-    final newColumns = await Navigator.of(context).push(MaterialPageRoute(
-        builder: (BuildContext context) => new Settings(
+    // Navigator.pop on the Settings Screen
+    await Navigator.of(context).push(MaterialPageRoute(
+        builder: (BuildContext context) => new SettingsScreen(
               columns: this.columns,
             )));
 
+    final prefs = await SharedPreferences.getInstance();
+
+// Try reading data from the counter key. If it does not exist, return 0.
+    final newColumns = prefs.getInt('columns') ?? null;
     print("columns: $newColumns");
     if (newColumns != null) {
       setState(() {

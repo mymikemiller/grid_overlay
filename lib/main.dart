@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
-import 'settings.dart';
+import 'settings_screen.dart';
 import 'grid_overlay_home.dart';
 
 void logError(String code, String message) =>
@@ -21,7 +21,8 @@ class CameraApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         'main': (BuildContext context) =>
             new GridOverlayHome(camera: camera, columns: columns),
-        'settings': (BuildContext context) => new Settings(columns: columns),
+        'settings': (BuildContext context) =>
+            new SettingsScreen(columns: columns),
       },
     );
   }

@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class Settings extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   final int columns;
 
-  Settings({this.columns});
+  SettingsScreen({this.columns});
 
   @override
-  SettingsState createState() {
-    return new SettingsState();
+  SettingsScreenState createState() {
+    return new SettingsScreenState();
   }
 }
 
-class SettingsState extends State<Settings> {
+class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController _columnsController;
 
   // Create a global key that will uniquely identify the Form widget and allow
@@ -27,6 +28,15 @@ class SettingsState extends State<Settings> {
         new TextEditingController(text: widget.columns.toString());
   }
 
+  _saveSettings() async {
+    // Save to shared preferences
+    final prefs = await SharedPreferences.getInstance();
+
+    int columns = int.parse(_columnsController.text);
+
+    await prefs.setInt("columns", columns);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -37,9 +47,9 @@ class SettingsState extends State<Settings> {
             icon: Icon(Icons.save),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                int columns = int.parse(_columnsController.text);
-                print("Changing to $columns squares across");
-                Navigator.of(context).pop(columns);
+                _saveSettings();
+
+                Navigator.of(context).pop();
               }
             },
           ),
