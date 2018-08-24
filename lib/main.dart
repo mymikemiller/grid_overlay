@@ -13,16 +13,13 @@ class CameraApp extends StatelessWidget {
 
   CameraApp({this.camera});
 
-  int columns = 3;
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      home: new GridOverlayHome(camera: camera, columns: columns),
+      home: new GridOverlayHome(camera: camera),
       routes: <String, WidgetBuilder>{
-        'main': (BuildContext context) =>
-            new GridOverlayHome(camera: camera, columns: columns),
-        'settings': (BuildContext context) =>
-            new SettingsScreen(columns: columns),
+        'main': (BuildContext context) => new GridOverlayHome(camera: camera),
+        'settings': (BuildContext context) => new SettingsScreen(),
       },
     );
   }

@@ -49,6 +49,11 @@ class SettingsScreenState extends State<SettingsScreen> {
     return parsed != null && value.isNotEmpty;
   }
 
+  void _saveAndClose() async {
+    await _saveSettings();
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -59,9 +64,7 @@ class SettingsScreenState extends State<SettingsScreen> {
             icon: Icon(Icons.save),
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                _saveSettings();
-
-                Navigator.of(context).pop();
+                _saveAndClose();
               }
             },
           ),

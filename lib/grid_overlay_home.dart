@@ -8,11 +8,9 @@ void logError(String code, String message) =>
     print('Error: $code\nError Message: $message');
 
 class GridOverlayHome extends StatefulWidget {
-  final int columns;
-  final int lineWidth;
   final CameraDescription camera;
 
-  GridOverlayHome({this.camera, this.columns, this.lineWidth}) {
+  GridOverlayHome({this.camera}) {
     print("Setting camera");
   }
 
@@ -42,6 +40,27 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+  initState() {
+    super.initState();
+    _applyPrefs();
+  }
+
+  void _applyPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    // Read the settings from shared preferences
+    final newColumns = prefs.getInt('columns') ?? null;
+    final newLineWidth = prefs.getInt('lineWidth') ?? null;
+
+    if (newColumns != null && newLineWidth != null) {
+      setState(() {
+        this.columns = newColumns;
+        this.lineWidth = newLineWidth;
+        print("Applying newLineWidth $newLineWidth");
+      });
+    }
+  }
+
   _GridOverlayHomeState(CameraDescription camera) {
     if (camera != null) {
       onNewCameraSelected(camera);
@@ -58,25 +77,14 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
               lineWidth: this.lineWidth,
             )));
 
-    final prefs = await SharedPreferences.getInstance();
-
-    // Read the settings from shared preferences
-    final newColumns = prefs.getInt('columns') ?? null;
-    final newLineWidth = prefs.getInt('lineWidth') ?? null;
-
-    if (newColumns != null && newLineWidth != null) {
-      setState(() {
-        this.columns = newColumns;
-        this.lineWidth = newLineWidth;
-      });
-    }
+    _applyPrefs();
   }
 
   /// Display the preview from the camera (or a message if the preview is not available).
   Widget _cameraPreviewWidget() {
     if (controller == null || !controller.value.isInitialized) {
       return const Text(
-        'Tap a camera',
+        'No camera found',
         style: TextStyle(
           color: Colors.white,
           fontSize: 24.0,
@@ -146,24 +154,34 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
     return new Scaffold(
       key: _scaffoldKey,
       appBar: null,
-      body: new Column(
+      body: new Stack(
         children: <Widget>[
-          new Expanded(
-            child: new Container(
-              child: new Padding(
-                padding: const EdgeInsets.all(1.0),
-                child: new Center(
-                  child: _cameraPreviewWidget(),
-                ),
+          // Grid widget
+          new Positioned.fill(
+            child: new CustomPaint(
+              painter: new GridPainter(
+                columns: columns,
+                gridColor: Colors.blue,
+                strokeWidth: lineWidth.toDouble(),
               ),
-              decoration: new BoxDecoration(
-                color: Colors.black,
-                border: new Border.all(
-                  color: controller != null && controller.value.isRecordingVideo
-                      ? Colors.redAccent
-                      : Colors.grey,
-                  width: 3.0,
-                ),
+            ),
+          ),
+
+          // Camera widget
+          new Container(
+            child: new Padding(
+              padding: const EdgeInsets.all(1.0),
+              child: new Center(
+                child: _cameraPreviewWidget(),
+              ),
+            ),
+            decoration: new BoxDecoration(
+              color: Colors.black,
+              border: new Border.all(
+                color: controller != null && controller.value.isRecordingVideo
+                    ? Colors.redAccent
+                    : Colors.grey,
+                width: 3.0,
               ),
             ),
           ),
