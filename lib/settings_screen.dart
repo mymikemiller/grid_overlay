@@ -23,7 +23,6 @@ class SettingsScreenState extends State<SettingsScreen> {
   Color currentColor = new Color(0xff443a49);
   ValueChanged<Color> onColorChanged;
 
-  // bind some values with [ValueChanged<Color>] callback
   changeColor(Color color) {
     setState(() => pickerColor = color);
   }
@@ -69,6 +68,87 @@ class SettingsScreenState extends State<SettingsScreen> {
     Navigator.of(context).pop();
   }
 
+  Widget _numericalField(
+      {String title, Icon icon, TextEditingController controller}) {
+    return ListTile(
+      leading: icon,
+      title: Row(
+        children: <Widget>[
+          Text(title),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: TextFormField(
+                controller: controller,
+                validator: (value) {
+                  if (!_validateNumber(value)) {
+                    return 'Please enter a number';
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: title,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _lineColorField() {
+    return ListTile(
+      leading: Icon(Icons.format_color_fill),
+      title: Row(
+        children: <Widget>[
+          Text("Line Color"),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: _lineColorButton(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  RaisedButton _lineColorButton() {
+    return RaisedButton(
+        elevation: 3.0,
+        onPressed: () {
+          pickerColor = currentColor;
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('Pick a color!'),
+                content: SingleChildScrollView(
+                  child: ColorPicker(
+                    pickerColor: pickerColor,
+                    onColorChanged: changeColor,
+                    colorPickerWidth: 1000.0,
+                    pickerAreaHeightPercent: 0.7,
+                  ),
+                ),
+                actions: <Widget>[
+                  FlatButton(
+                    child: Text('Choose'),
+                    onPressed: () {
+                      setState(() => currentColor = pickerColor);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        color: currentColor,
+        textColor: Colors.white);
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -87,75 +167,17 @@ class SettingsScreenState extends State<SettingsScreen> {
         ),
         body: new Form(
           key: _formKey,
-          child: ListView(
+          child: Column(
             children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Text("Squares Across:"),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _columnsController,
-                      validator: (value) {
-                        if (!_validateNumber(value)) {
-                          return 'Please enter a number';
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: <Widget>[
-                  Text("Line Width:"),
-                  Expanded(
-                    child: TextFormField(
-                      controller: _lineWidthController,
-                      validator: (value) {
-                        if (!_validateNumber(value)) {
-                          return 'Please enter a number';
-                        }
-                      },
-                      keyboardType: TextInputType.number,
-                    ),
-                  ),
-                ],
-              ),
-              Center(
-                child: RaisedButton(
-                    child: Text("Line Color"),
-                    elevation: 3.0,
-                    onPressed: () {
-                      pickerColor = currentColor;
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: const Text('Pick a color!'),
-                            content: SingleChildScrollView(
-                              child: ColorPicker(
-                                pickerColor: pickerColor,
-                                onColorChanged: changeColor,
-                                colorPickerWidth: 1000.0,
-                                pickerAreaHeightPercent: 0.7,
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('Got it'),
-                                onPressed: () {
-                                  setState(() => currentColor = pickerColor);
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    color: currentColor,
-                    textColor: Colors.white),
-              )
+              _numericalField(
+                  title: "Squares Across:",
+                  icon: Icon(Icons.grid_on),
+                  controller: _columnsController),
+              _numericalField(
+                  title: "Line Width:",
+                  icon: Icon(Icons.line_weight),
+                  controller: _lineWidthController),
+              _lineColorField(),
             ],
           ),
         ));

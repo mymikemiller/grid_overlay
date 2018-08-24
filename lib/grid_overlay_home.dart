@@ -63,7 +63,6 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
 
         final newLineColor = Color(newLineColorValue);
         this.lineColor = newLineColor;
-        print("Applying newLineColor $newLineColor");
       });
     }
   }
