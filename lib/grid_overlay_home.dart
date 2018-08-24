@@ -37,6 +37,7 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   CameraController controller;
   int columns = 3;
   int lineWidth = 2;
+  Color lineColor = new Color(0xFFFFFFFF);
 
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -48,15 +49,21 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
   void _applyPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
-    // Read the settings from shared preferences
+    // Read the settings ;from shared preferences
     final newColumns = prefs.getInt('columns') ?? null;
     final newLineWidth = prefs.getInt('lineWidth') ?? null;
+    final newLineColorValue = prefs.getInt('lineColor') ?? null;
 
-    if (newColumns != null && newLineWidth != null) {
+    if (newColumns != null &&
+        newLineWidth != null &&
+        newLineColorValue != null) {
       setState(() {
         this.columns = newColumns;
         this.lineWidth = newLineWidth;
-        print("Applying newLineWidth $newLineWidth");
+
+        final newLineColor = Color(newLineColorValue);
+        this.lineColor = newLineColor;
+        print("Applying newLineColor $newLineColor");
       });
     }
   }
@@ -75,6 +82,7 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
         builder: (BuildContext context) => new SettingsScreen(
               columns: this.columns,
               lineWidth: this.lineWidth,
+              lineColor: this.lineColor,
             )));
 
     _applyPrefs();
@@ -104,7 +112,7 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
             child: new CustomPaint(
               painter: new GridPainter(
                 columns: columns,
-                gridColor: Colors.white,
+                gridColor: lineColor,
                 strokeWidth: lineWidth.toDouble(),
               ),
             ),

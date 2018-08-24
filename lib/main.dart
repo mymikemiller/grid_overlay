@@ -21,6 +21,7 @@ class CameraApp extends StatelessWidget {
         'main': (BuildContext context) => new GridOverlayHome(camera: camera),
         'settings': (BuildContext context) => new SettingsScreen(),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }

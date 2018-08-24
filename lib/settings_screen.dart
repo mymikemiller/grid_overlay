@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class SettingsScreen extends StatefulWidget {
   final int columns;
   final int lineWidth;
+  final Color lineColor;
 
-  SettingsScreen({this.columns, this.lineWidth});
+  SettingsScreen({this.columns, this.lineWidth, this.lineColor});
 
   @override
   SettingsScreenState createState() {
@@ -16,6 +18,15 @@ class SettingsScreen extends StatefulWidget {
 class SettingsScreenState extends State<SettingsScreen> {
   TextEditingController _columnsController;
   TextEditingController _lineWidthController;
+
+  Color pickerColor = new Color(0xff443a49);
+  Color currentColor = new Color(0xff443a49);
+  ValueChanged<Color> onColorChanged;
+
+  // bind some values with [ValueChanged<Color>] callback
+  changeColor(Color color) {
+    setState(() => pickerColor = color);
+  }
 
   // Create a global key that will uniquely identify the Form widget and allow
   // us to validate the form
@@ -31,6 +42,8 @@ class SettingsScreenState extends State<SettingsScreen> {
 
     _lineWidthController =
         new TextEditingController(text: widget.lineWidth.toString());
+
+    currentColor = widget.lineColor;
   }
 
   _saveSettings() async {
@@ -42,6 +55,8 @@ class SettingsScreenState extends State<SettingsScreen> {
 
     int lineWidth = int.parse(_lineWidthController.text);
     await prefs.setInt("lineWidth", lineWidth);
+
+    await prefs.setInt("lineColor", currentColor.value);
   }
 
   bool _validateNumber(String value) {
@@ -57,20 +72,20 @@ class SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Settings"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                _saveAndClose();
-              }
-            },
-          ),
-        ],
-      ),
-      body: new Form(
+        appBar: new AppBar(
+          title: new Text("Settings"),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.save),
+              onPressed: () {
+                if (_formKey.currentState.validate()) {
+                  _saveAndClose();
+                }
+              },
+            ),
+          ],
+        ),
+        body: new Form(
           key: _formKey,
           child: ListView(
             children: <Widget>[
@@ -105,9 +120,44 @@ class SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ],
+              ),
+              Center(
+                child: RaisedButton(
+                    child: Text("Line Color"),
+                    elevation: 3.0,
+                    onPressed: () {
+                      pickerColor = currentColor;
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Pick a color!'),
+                            content: SingleChildScrollView(
+                              child: ColorPicker(
+                                pickerColor: pickerColor,
+                                onColorChanged: changeColor,
+                                colorPickerWidth: 1000.0,
+                                pickerAreaHeightPercent: 0.7,
+                              ),
+                            ),
+                            actions: <Widget>[
+                              FlatButton(
+                                child: Text('Got it'),
+                                onPressed: () {
+                                  setState(() => currentColor = pickerColor);
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                    color: currentColor,
+                    textColor: Colors.white),
               )
             ],
-          )),
-    );
+          ),
+        ));
   }
 }
