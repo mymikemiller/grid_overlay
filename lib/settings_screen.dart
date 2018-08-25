@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   final int columns;
@@ -68,6 +69,15 @@ class SettingsScreenState extends State<SettingsScreen> {
     Navigator.of(context).pop();
   }
 
+  void _sendSupportEmail() async {
+    const url = 'mailto:mikem.exe@gmail.com?subject=Grid%20Overlay';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   Widget _numericalField(
       {String title, Icon icon, TextEditingController controller}) {
     return ListTile(
@@ -102,7 +112,7 @@ class SettingsScreenState extends State<SettingsScreen> {
       leading: Icon(Icons.format_color_fill),
       title: Row(
         children: <Widget>[
-          Text("Line Color"),
+          Text("Line Color:"),
           Expanded(
             child: Padding(
               padding: EdgeInsets.all(10.0),
@@ -149,6 +159,29 @@ class SettingsScreenState extends State<SettingsScreen> {
         textColor: Colors.white);
   }
 
+  Widget _contactSupport() {
+    return ListTile(
+      leading: Icon(Icons.contact_mail),
+      title: Row(
+        children: <Widget>[
+          Text("Contact Support:"),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.all(10.0),
+              child: new InkWell(
+                child: new Text(
+                  "Send an Email",
+                  style: new TextStyle(color: Colors.blue),
+                ),
+                onTap: _sendSupportEmail,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -178,6 +211,7 @@ class SettingsScreenState extends State<SettingsScreen> {
                   icon: Icon(Icons.line_weight),
                   controller: _lineWidthController),
               _lineColorField(),
+              _contactSupport(),
             ],
           ),
         ));
