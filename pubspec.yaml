@@ -14,7 +14,7 @@ dependencies:
   shared_preferences: "^0.4.2"
   flutter_colorpicker: any
   url_launcher: "^3.0.3"
-  flutter_launcher_icons: "^0.5.2"
+  flutter_launcher_icons: "^0.6.0"
 
 dev_dependencies:
   flutter_test:
