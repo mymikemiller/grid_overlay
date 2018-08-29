@@ -1,9 +1,3 @@
-# grid_overlay
+# Grid Overlay
 
-A new Flutter project.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
-# grid_overlay
+Superimpose a customizable grid on top of the camera view on iPhone and Android.
