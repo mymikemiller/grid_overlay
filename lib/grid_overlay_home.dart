@@ -163,35 +163,46 @@ class _GridOverlayHomeState extends State<GridOverlayHome> {
       appBar: null,
       body: new Stack(
         children: <Widget>[
+          // Stock photo widget (For taking screenshots)
+          Positioned.fill(
+            child: new DecoratedBox(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                    image: new AssetImage('images/sculpture1.jpg'),
+                    fit: BoxFit.cover),
+              ),
+            ),
+          ),
+
           // Grid widget
           new Positioned.fill(
             child: new CustomPaint(
               painter: new GridPainter(
                 columns: columns,
-                gridColor: Colors.blue,
+                gridColor: lineColor,
                 strokeWidth: lineWidth.toDouble(),
               ),
             ),
           ),
 
-          // Camera widget
-          new Container(
-            child: new Padding(
-              padding: const EdgeInsets.all(1.0),
-              child: new Center(
-                child: _cameraPreviewWidget(),
-              ),
-            ),
-            decoration: new BoxDecoration(
-              color: Colors.black,
-              border: new Border.all(
-                color: controller != null && controller.value.isRecordingVideo
-                    ? Colors.redAccent
-                    : Colors.grey,
-                width: 3.0,
-              ),
-            ),
-          ),
+          //Camera widget
+          // new Container(
+          //   child: new Padding(
+          //     padding: const EdgeInsets.all(1.0),
+          //     child: new Center(
+          //       child: _cameraPreviewWidget(),
+          //     ),
+          //   ),
+          //   decoration: new BoxDecoration(
+          //     color: Colors.black,
+          //     border: new Border.all(
+          //       color: controller != null && controller.value.isRecordingVideo
+          //           ? Colors.redAccent
+          //           : Colors.grey,
+          //       width: 3.0,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
